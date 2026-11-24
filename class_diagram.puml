@@ -1,0 +1,122 @@
+
+@startuml
+
+title Диаграмма классов приложения для адаптивного изучения немецкого языка
+
+skinparam classAttributeIconSize 0
+
+class User {
+    - id: int
+    - name: str
+    - email: str
+    - password: str
+    + register(): bool
+    + login(): bool
+}
+
+class Lesson {
+    - id: int
+    - title: str
+    - orderNumber: int
+    + getMaterial(): LessonMaterial
+    + getTest(): Test
+}
+
+class LessonMaterial {
+    - id: int
+    - content: str
+    - topic: str
+    + displayMaterial(): void
+}
+
+class Test {
+    - id: int
+    - passingScore: float
+    + startTest(): void
+    + checkResult(): bool
+}
+
+class Question {
+    - id: int
+    - text: str
+    - options: list
+    - correctAnswer: str
+    + checkAnswer(): bool
+}
+
+class TestAttempt {
+    - id: int
+    - score: float
+    - date: str
+    - passed: bool
+    + calculateScore(): float
+}
+
+class LessonProgress {
+    - id: int
+    - status: str
+    - attemptsCount: int
+    + updateStatus(): void
+    + completeLesson(): void
+}
+
+class VocabularyWord {
+    - id: int
+    - germanWord: str
+    - translation: str
+    - example: str
+    + displayCard(): void
+}
+
+class VocabularyProgress {
+    - id: int
+    - correctAnswers: int
+    - incorrectAnswers: int
+    - memoryRating: float
+    - nextReviewDate: str
+    + updateStatistics(): void
+    + calculateMemoryRating(): float
+}
+
+class VocabularyService {
+    + checkAnswer(): void
+    + selectWordsForReview(): list
+    + updateWordRating(): void
+}
+
+class LessonService {
+    + checkPassingScore(): bool
+    + unlockNextLesson(): void
+    + repeatLesson(): void
+}
+
+' Связи пользователей и грамматических уроков
+
+User "1" -- "0..*" LessonProgress : имеет
+Lesson "1" -- "0..*" LessonProgress : отслеживается
+
+' Структура грамматического урока
+
+Lesson "1" *-- "1" LessonMaterial : содержит
+Lesson "1" *-- "1" Test : содержит
+Test "1" *-- "1..*" Question : состоит из
+
+User "1" -- "0..*" TestAttempt : выполняет
+Test "1" -- "0..*" TestAttempt : имеет
+LessonProgress "1" -- "0..*" TestAttempt : учитывает
+
+' Независимая система изучения лексики
+
+User "1" -- "0..*" VocabularyProgress : имеет
+VocabularyWord "1" -- "0..*" VocabularyProgress : отслеживается
+
+VocabularyService ..> VocabularyWord : использует
+VocabularyService ..> VocabularyProgress : анализирует
+
+' Управление прохождением уроков
+
+LessonService ..> LessonProgress : управляет
+LessonService ..> TestAttempt : проверяет
+LessonService ..> Lesson : открывает
+
+@enduml

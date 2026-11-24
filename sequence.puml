@@ -1,0 +1,50 @@
+
+@startuml
+
+title Диаграмма последовательности прохождения грамматического урока
+
+actor "Ученик" as Student
+participant "Приложение" as App
+participant "LessonService" as LS
+participant "Lesson" as Lesson
+participant "Test" as Test
+participant "TestAttempt" as Attempt
+participant "LessonProgress" as Progress
+
+Student -> App: Выбирает урок
+App -> LS: Проверить доступность урока
+LS -> Progress: Получить статус урока
+Progress --> LS: Статус урока
+
+alt Урок доступен
+    LS --> App: Доступ разрешён
+    App -> Lesson: Получить учебный материал
+    Lesson --> App: Учебный материал
+    App --> Student: Показать материал
+
+    Student -> App: Завершает изучение материала
+    Student -> App: Начинает тест
+    App -> Test: startTest()
+    Test --> App: Вопросы теста
+    App --> Student: Показать вопросы
+
+    Student -> App: Отправляет ответы
+    App -> Attempt: calculateScore(Test)
+    Attempt --> App: Результат теста
+
+    alt Результат достаточный
+        App -> Progress: completeLesson()
+        App -> LS: unlockNextLesson()
+        LS --> App: Следующий урок открыт
+        App --> Student: Урок пройден
+    else Результат недостаточный
+        App -> Progress: updateStatus("in_progress")
+        App --> Student: Предложить повторить материал и тест
+    end
+
+else Урок недоступен
+    LS --> App: Доступ запрещён
+    App --> Student: Показать сообщение о блокировке
+end
+
+@enduml

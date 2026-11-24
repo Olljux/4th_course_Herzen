@@ -1,0 +1,52 @@
+
+@startuml
+left to right direction
+
+actor "Ученик" as Student
+actor "Администратор" as Admin
+
+rectangle "Приложение для адаптивного изучения немецкого языка" {
+
+    usecase "Регистрация" as UC1
+    usecase "Авторизация" as UC2
+
+    usecase "Прохождение входного\nтестирования" as UC3
+    usecase "Просмотр учебных\nматериалов" as UC4
+    usecase "Изучение грамматики" as UC5
+    usecase "Изучение лексики" as UC6
+    usecase "Выполнение упражнений" as UC7
+    usecase "Прохождение тестов" as UC8
+    usecase "Просмотр результатов" as UC9
+    usecase "Просмотр прогресса" as UC10
+    usecase "Получение персональных\nрекомендаций" as UC11
+
+    usecase "Добавление учебных\nматериалов" as UC12
+    usecase "Редактирование учебных\nматериалов" as UC13
+    usecase "Удаление учебных\nматериалов" as UC14
+    usecase "Управление упражнениями" as UC15
+    usecase "Управление тестами" as UC16
+}
+
+Student --> UC1
+Student --> UC2
+Student --> UC3
+Student --> UC4
+Student --> UC5
+Student --> UC6
+Student --> UC7
+Student --> UC8
+Student --> UC9
+Student --> UC10
+Student --> UC11
+
+Admin --> UC2
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+
+UC4 .> UC5 : <<include>>
+UC4 .> UC6 : <<include>>
+
+@enduml
